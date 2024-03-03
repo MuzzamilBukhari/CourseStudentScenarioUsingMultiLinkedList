@@ -155,7 +155,7 @@ void delStudFromCourse (int studentID, int courseID){
 // Delete a Student
 void delStudent (int studentID){
     if (head == NULL){
-        cout << "List is Empty " << endl;
+        cout << "Course List is Empty " << endl;
         return;
     }
     Course* currCourse = head;
@@ -237,10 +237,58 @@ void printListOfStudentsInCourse(int courseID){
         currStudent = currStudent->next;
     }
 }
+
+void printCoursesOfStudent(int studentID){
+    if (head == NULL){
+        cout << "Course List is Empty !!!" << endl;
+        return;
+    }
+    int i = 0;
+    Course* currCourse = head;
+    while (currCourse != NULL){
+        Student* currStud = currCourse->studStart;
+        while (currStud != NULL){
+            if (currStud->studentID == studentID){
+                cout << "Course ID : " << currCourse->courseID << endl;
+                i++;
+                break;
+            }
+            currStud = currStud->next;
+        }
+        currCourse = currCourse->next;
+    }
+    if (i == 0){
+        cout << "Student has not opted any course !!!" << endl;
+    }
+}
+
+
 int main (){
+    addCourse(302);
+    addCourse(304);
+    addCourse(306);
+    addCourse(308);
+    addCourse(310);
+    addStudToCourse(1, 302);
+    addStudToCourse(2, 302);
+    addStudToCourse(3, 302);
+    addStudToCourse(2, 304);
+    addStudToCourse(4, 304);
+    addStudToCourse(3, 306);
+    addStudToCourse(2, 306);
+    addStudToCourse(1, 306);
+    addStudToCourse(5, 306);
+    addStudToCourse(4, 308);
+    addStudToCourse(5, 308);
+    addStudToCourse(3, 308);
+    addStudToCourse(2, 308);
+    addStudToCourse(1, 308);
+    addStudToCourse(5, 310);
+    addStudToCourse(6, 310);
+    addStudToCourse(3, 310);
     int n;
     do {
-        cout << "Enter 1 to Add a Course " << endl << "Enter 2 to Delete a Course " << endl << "Enter 3 to Search a Course " << endl << "Enter 4 to Print a Course List " << endl << "Enter 5 to Add a Student to a Course " << endl << "Enter 6 to Delete a Student from a Course " << endl << "Enter 7 to Delete a Student " << endl << "Enter 8 to Search a Student in Course " << endl << "Enter 9 to Print list of Students in a Course " << endl << "Enter 10 to Exit " << endl;
+        cout << "Enter 1 to Add a Course " << endl << "Enter 2 to Delete a Course " << endl << "Enter 3 to Search a Course " << endl << "Enter 4 to Print a Course List " << endl << "Enter 5 to Add a Student to a Course " << endl << "Enter 6 to Delete a Student from a Course " << endl << "Enter 7 to Delete a Student " << endl << "Enter 8 to Search a Student in Course " << endl << "Enter 9 to Print list of Students in a Course " << endl << "Enter 10 to Print the list of Courses in which a student has enrolled " << endl << "Enter 11 to Exit " << endl;
         cin >> n;
         if (n == 1){
             int courseID;
@@ -340,9 +388,18 @@ int main (){
                 } 
             }
         } else if (n == 10){
+            int ID;
+            cout << "Enter ID of Student : ";
+            cin >> ID;
+            if (ID < 0){
+                cout << "Student ID must be positive !!!" << endl;
+            } else {
+                printCoursesOfStudent(ID);
+            }
+        } else if (n == 11){
             cout << "Exit" << endl;
         } else {
             cout << "Please input a Number between 1 - 10 !!!" << endl;
         }
-    } while (n != 10); 
+    } while (n != 11); 
 }
