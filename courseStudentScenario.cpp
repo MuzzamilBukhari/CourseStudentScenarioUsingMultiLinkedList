@@ -15,8 +15,29 @@ struct Course {
 
 Course* head = NULL;
 
+// Search Course Function
+bool searchCourse (int ID){
+    if (head == NULL){
+        return false;
+    }
+    Course* curr = head;
+    while (curr != NULL){
+        if (curr->courseID == ID){
+            return true;
+        }
+        curr = curr->next;
+    }
+    if (curr  == NULL){
+        return false;
+    }
+}
+
 // Add course function
 void addCourse (int ID){
+    if (searchCourse(ID)){
+        cout << "Course ID already Exists in the List !!! " << endl;
+        return;
+    }
     Course* ptr = (Course*)malloc(sizeof(Course));
     ptr->courseID = ID;
     ptr->studStart =  NULL;
@@ -58,27 +79,7 @@ void delCourse (int ID){
         curr = curr->next;
     }
     if (curr == NULL){
-        cout << "Course no Not found in the List " << endl;
-    }
-}
-
-// Search Course Function
-bool searchCourse (int ID){
-    if (head == NULL){
-        cout << "List is Empty" << endl;
-        return false;
-    }
-    Course* curr = head;
-    while (curr != NULL){
-        if (curr->courseID == ID){
-            cout << "Course is Available in the list " << endl;
-            return true;
-        }
-        curr = curr->next;
-    }
-    if (curr  == NULL){
-        cout << "Course not Found in the List" << endl;
-        return false;
+        cout << "Course Not found in the List " << endl;
     }
 }
 
@@ -98,7 +99,39 @@ void printCourseList (){
     }
 }
 
+// Search student in course extra function
+bool searchStudentFromCourse (int courseID, int studentID){
+    if (head->courseID == courseID){
+        Student* currStud = head->studStart;
+        while (currStud != NULL){
+            if (currStud->studentID == studentID){
+                return true;
+            }
+            currStud = currStud->next;
+        }
+        return false;
+    }
+    Course* currCourse = head->next;
+    while (currCourse != NULL){
+        if (currCourse->courseID == courseID){
+            Student* currStud = currCourse->studStart;
+            while (currStud != NULL){
+                if (currStud->studentID == studentID){
+                    return true;
+                }
+                currStud = currStud->next;
+            }
+            return false;
+        }
+        currCourse = currCourse->next;
+    }
+}
+
 void addStudToCourse (int studentID, int courseID){
+    if (searchStudentFromCourse(courseID, studentID)){
+        cout << "Student already enroll in this course !!!" << endl;
+        return;
+    }
     Course* curr = head;
     while (curr != NULL){
         if (curr->courseID == courseID){
@@ -188,39 +221,7 @@ void delStudent (int studentID){
 
 }
 
-// Search student in course extra function
-bool searchStudentFromCourse (int courseID, int studentID){
-    if (head->courseID == courseID){
-        Student* currStud = head->studStart;
-        while (currStud != NULL){
-            if (currStud->studentID == studentID){
-                cout << "Student found in this course " << endl;
-                return true;
-            }
-            currStud = currStud->next;
-        }
-        cout << "Student not Found in this course " << endl;
-        return false;
-    }
-    Course* currCourse = head->next;
-    while (currCourse != NULL){
-        if (currCourse->courseID == courseID){
-            Student* currStud = currCourse->studStart;
-            while (currStud != NULL){
-                if (currStud->studentID == studentID){
-                    cout << "Student found in this course " << endl;
-                    return true;
-                }
-                currStud = currStud->next;
-            }
-            cout << "Student not Found in this course " << endl;
-            return false;
-        }
-        currCourse = currCourse->next;
-    }
-}
-
-
+// Print list of Students in a course
 void printListOfStudentsInCourse(int courseID){
     Course* currCourse = head;
     while (currCourse != NULL){
@@ -264,28 +265,6 @@ void printCoursesOfStudent(int studentID){
 
 
 int main (){
-    addCourse(302);
-    addCourse(304);
-    addCourse(306);
-    addCourse(308);
-    addCourse(310);
-    addStudToCourse(1, 302);
-    addStudToCourse(2, 302);
-    addStudToCourse(3, 302);
-    addStudToCourse(2, 304);
-    addStudToCourse(4, 304);
-    addStudToCourse(3, 306);
-    addStudToCourse(2, 306);
-    addStudToCourse(1, 306);
-    addStudToCourse(5, 306);
-    addStudToCourse(4, 308);
-    addStudToCourse(5, 308);
-    addStudToCourse(3, 308);
-    addStudToCourse(2, 308);
-    addStudToCourse(1, 308);
-    addStudToCourse(5, 310);
-    addStudToCourse(6, 310);
-    addStudToCourse(3, 310);
     int n;
     do {
         cout << "Enter 1 to Add a Course " << endl << "Enter 2 to Delete a Course " << endl << "Enter 3 to Search a Course " << endl << "Enter 4 to Print a Course List " << endl << "Enter 5 to Add a Student to a Course " << endl << "Enter 6 to Delete a Student from a Course " << endl << "Enter 7 to Delete a Student " << endl << "Enter 8 to Search a Student in Course " << endl << "Enter 9 to Print list of Students in a Course " << endl << "Enter 10 to Print the list of Courses in which a student has enrolled " << endl << "Enter 11 to Exit " << endl;
@@ -315,7 +294,11 @@ int main (){
             if (courseID < 0){
                 cout << "Course ID must be positive !!!" << endl;
             } else {
-                searchCourse(courseID);
+                if (searchCourse(courseID)){
+                    cout << "Course found in the List " << endl;
+                } else {
+                    cout << "Course not Found in the List !!!" << endl;
+                }
             }
         } else if (n == 4){
             printCourseList();
@@ -332,7 +315,9 @@ int main (){
                 } else {
                     addStudToCourse(studentID, courseID);
                 }
-            } 
+            } else{
+                cout << "Course not Found in the List !!!" << endl;
+            }
         } else if (n == 6){
             int studentID;
             int courseID;
@@ -346,6 +331,8 @@ int main (){
                 } else {
                     delStudFromCourse(studentID, courseID);
                 }
+            } else {
+                cout << "Course not Found in the List !!!" << endl;
             }
         } else if (n == 7){
             int studentID;
@@ -370,7 +357,11 @@ int main (){
                     if (studentID < 0){
                         cout << "Student ID must be positive !!!" << endl;
                     } else {
-                        searchStudentFromCourse (courseID, studentID);
+                        if (searchStudentFromCourse (courseID, studentID)){
+                            cout << "Student enroll in this course " << endl;
+                        } else {
+                            cout << "Student not found in this course !!!" << endl;
+                        }
                     }
                 } else {
                     cout << "Course not Found in the List " << endl;
